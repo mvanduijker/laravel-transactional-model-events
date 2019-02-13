@@ -1,0 +1,49 @@
+{
+    "name": "mvanduijker/laravel-transactional-model-events",
+    "description": "Add eloquent model events fired after a transaction is committed or rolled back",
+    "keywords": [
+        "laravel",
+        "eloquent",
+        "transaction",
+        "database",
+        "events",
+        "laravel-transactional-model-events"
+    ],
+    "homepage": "https://github.com/mvanduijker/laravel-transactional-model-events",
+    "license": "MIT",
+    "authors": [
+        {
+            "name": "Mark van Duijker",
+            "email": "mark@duyker.nl",
+            "homepage": "https://github.com/mvanduijker",
+            "role": "Developer"
+        }
+    ],
+    "require": {
+        "php": "^7.1",
+        "illuminate/database": "~5.5.0|~5.6.0|~5.7.0"
+    },
+    "require-dev": {
+        "larapack/dd": "^1.0",
+        "orchestra/testbench": "~3.0",
+        "phpunit/phpunit": "^7.0"
+    },
+    "autoload": {
+        "psr-4": {
+            "MVanDuijker\\TransactionalModelEvents\\": "src"
+        }
+    },
+    "autoload-dev": {
+        "psr-4": {
+            "MVanDuijker\\TransactionalModelEvents\\Tests\\": "tests"
+        }
+    },
+    "scripts": {
+        "test": "vendor/bin/phpunit",
+        "test-coverage": "vendor/bin/phpunit --coverage-html coverage"
+
+    },
+    "config": {
+        "sort-packages": true
+    }
+}
