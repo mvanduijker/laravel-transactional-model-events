@@ -31,14 +31,14 @@ class TestCase extends \Orchestra\Testbench\TestCase
     protected function transactionalEvents()
     {
         return [
-            'after_commit_created',
-            'after_commit_saved',
-            'after_commit_updated',
-            'after_commit_deleted',
-            'after_rollback_created',
-            'after_rollback_saved',
-            'after_rollback_updated',
-            'after_rollback_deleted',
+            'afterCommit.created',
+            'afterCommit.saved',
+            'afterCommit.updated',
+            'afterCommit.deleted',
+            'afterRollback.created',
+            'afterRollback.saved',
+            'afterRollback.updated',
+            'afterRollback.deleted',
         ];
     }
 }

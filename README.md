@@ -8,7 +8,7 @@
 
 Add transactional events to your eloquent models. Will automatically detect changes in your models within a transaction 
 and will fire events on commit or rollback. Should mimic the same functionality as 
-[transactional callbacks](https://guides.rubyonrails.org/active_record_callbacks.html#transaction-callbacks) in Ruby on 
+[transactional callbacks](https://guides.rubyonrails.org/active_record_callbacks.html#transaction-callbacks) of Ruby on 
 Rails.
 
 You want to use this if you want to listen on events fired by models within a transaction and you want to be sure the transaction has completed successfully (or is rolled back).
@@ -35,14 +35,18 @@ class MyModel extends Model
 
 The following events will become available:
 
-* `after_commit_created`
-* `after_commit_saved`
-* `after_commit_updated`
-* `after_commit_deleted`
-* `after_rollback_created`
-* `after_rollback_saved`
-* `after_rollback_updated`
-* `after_rollback_deleted`
+* `afterCommit.created`
+* `afterCommit.saved`
+* `afterCommit.updated`
+* `afterCommit.deleted`
+* `afterCommit.restored`
+* `afterCommit.forceDeleted`
+* `afterRollback.created`
+* `afterRollback.saved`
+* `afterRollback.updated`
+* `afterRollback.deleted`
+* `afterRollback.restored`
+* `afterRollback.forceDeleted`
 
 You can add listeners in you EventServiceProvider the same way as normal events
 
@@ -53,7 +57,7 @@ You can add listeners in you EventServiceProvider the same way as normal events
  * @var array
  */
 protected $listen = [
-    'eloquent.after_commit_created: App\Models\Shipment' => [
+    'eloquent.afterCommit.created: App\Models\Shipment' => [
         'App\Listeners\SendShipmentNotification',
     ],
 ];
@@ -71,7 +75,7 @@ class PictureFile extends Model
     {
         parent::boot();
         
-        static::afterCommitDeleted(function ($model) {
+        static::registerModelEvent('afterCommit.created', function ($model) {
             if (Storage::exists($model->file)) {
                 Storage::delete($model->file);            
             }

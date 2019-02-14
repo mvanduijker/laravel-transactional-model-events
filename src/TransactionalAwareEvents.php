@@ -13,34 +13,23 @@ trait TransactionalAwareEvents
 
     public static function bootTransactionalAwareEvents()
     {
-        static::created(function (Model $model) {
-            if (DB::transactionLevel()) {
-                self::$queuedTransactionalEvents['created'][] = $model;
-            }
-        });
+        $eloquentEvents = [
+            'created', 'updated', 'saved', 'restored',
+            'deleted', 'forceDeleted',
+        ];
 
-        static::saved(function (Model $model) {
-            if (DB::transactionLevel()) {
-                self::$queuedTransactionalEvents['saved'][] = $model;
-            }
-        });
-
-        static::updated(function (Model $model) {
-            if (DB::transactionLevel()) {
-                self::$queuedTransactionalEvents['updated'][] = $model;
-            }
-        });
-
-        static::deleted(function (Model $model) {
-            if (DB::transactionLevel()) {
-                self::$queuedTransactionalEvents['deleted'][] = $model;
-            }
-        });
+        foreach ($eloquentEvents as $event) {
+            static::registerModelEvent($event, function (Model $model) use ($event) {
+                if (DB::transactionLevel()) {
+                    self::$queuedTransactionalEvents[$event][] = $model;
+                }
+            });
+        }
 
         static::getEventDispatcher()->listen(TransactionCommitted::class, function () {
             foreach (self::$queuedTransactionalEvents as $eventName => $models) {
                 foreach ($models as $model) {
-                    $model->fireModelEvent('after_commit_' . $eventName);
+                    $model->fireModelEvent('afterCommit.' . $eventName);
                 }
             }
             self::$queuedTransactionalEvents = [];
@@ -49,50 +38,10 @@ trait TransactionalAwareEvents
         static::getEventDispatcher()->listen(TransactionRolledBack::class, function () {
             foreach (self::$queuedTransactionalEvents as $eventName => $models) {
                 foreach ($models as $model) {
-                    $model->fireModelEvent('after_rollback_' . $eventName);
+                    $model->fireModelEvent('afterRollback.' . $eventName);
                 }
             }
             self::$queuedTransactionalEvents = [];
         });
-    }
-
-    public static function afterCommitCreated($callback)
-    {
-        static::registerModelEvent('after_commit_created', $callback);
-    }
-
-    public static function afterCommitSaved($callback)
-    {
-        static::registerModelEvent('after_commit_saved', $callback);
-    }
-
-    public static function afterCommitUpdated($callback)
-    {
-        static::registerModelEvent('after_commit_updated', $callback);
-    }
-
-    public static function afterCommitDeleted($callback)
-    {
-        static::registerModelEvent('after_commit_deleted', $callback);
-    }
-
-    public static function afterRollbackCreated($callback)
-    {
-        static::registerModelEvent('after_rollback_created', $callback);
-    }
-
-    public static function afterRollbackSaved($callback)
-    {
-        static::registerModelEvent('after_rollback_saved', $callback);
-    }
-
-    public static function afterRollbackUpdated($callback)
-    {
-        static::registerModelEvent('after_rollback_updated', $callback);
-    }
-
-    public static function afterRollbackDeleted($callback)
-    {
-        static::registerModelEvent('after_rollback_deleted', $callback);
     }
 }

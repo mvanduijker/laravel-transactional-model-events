@@ -16,10 +16,10 @@ class TransactionalAwareEventsTest extends TestCase
 
         DB::beginTransaction();
         TestModel::create(['name' => 'test create']);
-        Event::assertNotDispatched('eloquent.after_commit_created: ' . TestModel::class);
+        Event::assertNotDispatched('eloquent.afterCommit.created: ' . TestModel::class);
         DB::commit();
 
-        Event::assertDispatched('eloquent.after_commit_created: ' . TestModel::class);
+        Event::assertDispatched('eloquent.afterCommit.created: ' . TestModel::class);
     }
 
     /** @test */
@@ -29,10 +29,10 @@ class TransactionalAwareEventsTest extends TestCase
 
         DB::beginTransaction();
         TestModel::create(['name' => 'test saved']);
-        Event::assertNotDispatched('eloquent.after_commit_saved: ' . TestModel::class);
+        Event::assertNotDispatched('eloquent.afterCommit.saved: ' . TestModel::class);
         DB::commit();
 
-        Event::assertDispatched('eloquent.after_commit_saved: ' . TestModel::class);
+        Event::assertDispatched('eloquent.afterCommit.saved: ' . TestModel::class);
     }
 
     /** @test */
@@ -43,10 +43,10 @@ class TransactionalAwareEventsTest extends TestCase
 
         DB::beginTransaction();
         $model->update(['name' => 'new name']);
-        Event::assertNotDispatched('eloquent.after_commit_updated: ' . TestModel::class);
+        Event::assertNotDispatched('eloquent.afterCommit.updated: ' . TestModel::class);
         DB::commit();
 
-        Event::assertDispatched('eloquent.after_commit_updated: ' . TestModel::class);
+        Event::assertDispatched('eloquent.afterCommit.updated: ' . TestModel::class);
     }
 
     /** @test */
@@ -57,10 +57,10 @@ class TransactionalAwareEventsTest extends TestCase
 
         DB::beginTransaction();
         $model->delete();
-        Event::assertNotDispatched('eloquent.after_commit_deleted: ' . TestModel::class);
+        Event::assertNotDispatched('eloquent.afterCommit.deleted: ' . TestModel::class);
         DB::commit();
 
-        Event::assertDispatched('eloquent.after_commit_deleted: ' . TestModel::class);
+        Event::assertDispatched('eloquent.afterCommit.deleted: ' . TestModel::class);
     }
 
     /** @test */
@@ -70,10 +70,10 @@ class TransactionalAwareEventsTest extends TestCase
 
         DB::beginTransaction();
         TestModel::create(['name' => 'test create']);
-        Event::assertNotDispatched('eloquent.after_rollback_created: ' . TestModel::class);
+        Event::assertNotDispatched('eloquent.afterRollback.created: ' . TestModel::class);
         DB::rollBack();
 
-        Event::assertDispatched('eloquent.after_rollback_created: ' . TestModel::class);
+        Event::assertDispatched('eloquent.afterRollback.created: ' . TestModel::class);
     }
 
     /** @test */
@@ -83,10 +83,10 @@ class TransactionalAwareEventsTest extends TestCase
 
         DB::beginTransaction();
         TestModel::create(['name' => 'test saved']);
-        Event::assertNotDispatched('eloquent.after_rollback_saved: ' . TestModel::class);
+        Event::assertNotDispatched('eloquent.afterRollback.saved: ' . TestModel::class);
         DB::rollBack();
 
-        Event::assertDispatched('eloquent.after_rollback_saved: ' . TestModel::class);
+        Event::assertDispatched('eloquent.afterRollback.saved: ' . TestModel::class);
     }
 
     /** @test */
@@ -97,10 +97,10 @@ class TransactionalAwareEventsTest extends TestCase
 
         DB::beginTransaction();
         $model->update(['name' => 'new name']);
-        Event::assertNotDispatched('eloquent.after_rollback_updated: ' . TestModel::class);
+        Event::assertNotDispatched('eloquent.afterRollback.updated: ' . TestModel::class);
         DB::rollBack();
 
-        Event::assertDispatched('eloquent.after_rollback_updated: ' . TestModel::class);
+        Event::assertDispatched('eloquent.afterRollback.updated: ' . TestModel::class);
     }
 
     /** @test */
@@ -111,10 +111,10 @@ class TransactionalAwareEventsTest extends TestCase
 
         DB::beginTransaction();
         $model->delete();
-        Event::assertNotDispatched('eloquent.after_rollback_deleted: ' . TestModel::class);
+        Event::assertNotDispatched('eloquent.afterRollback.deleted: ' . TestModel::class);
         DB::rollBack();
 
-        Event::assertDispatched('eloquent.after_rollback_deleted: ' . TestModel::class);
+        Event::assertDispatched('eloquent.afterRollback.deleted: ' . TestModel::class);
     }
 
     public function test_it_fires_with_multiple_models()
@@ -126,7 +126,7 @@ class TransactionalAwareEventsTest extends TestCase
         TestModel::create(['name' => 'test create second']);
         DB::rollBack();
 
-        Event::assertDispatchedTimes('eloquent.after_rollback_created: ' . TestModel::class, 2);
+        Event::assertDispatchedTimes('eloquent.afterRollback.created: ' . TestModel::class, 2);
     }
 
     private function fakeTransactionalEvents($className)
