@@ -75,7 +75,7 @@ class PictureFile extends Model
     {
         parent::boot();
         
-        static::registerModelEvent('afterCommit.created', function ($model) {
+        static::registerModelEvent('afterCommit.deleted', function ($model) {
             if (Storage::exists($model->file)) {
                 Storage::delete($model->file);            
             }
@@ -83,11 +83,23 @@ class PictureFile extends Model
     }
 }
 
+You should also be able to map them to event classes
+
+```php
+class PictureFile extends Model
+{
+    use TransactionalAwareEvents;
+    
+    protected $dispatchesEvents = [
+        'afterCommit.created' => PictureFileCreated::class,
+        'afterCommit.deleted' => PictureFileDeleted::class,
+    ];
+}
 ```
 
 ### Testing
 
-``` bash
+```bash
 composer test
 ```
 
