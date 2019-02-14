@@ -82,6 +82,7 @@ class PictureFile extends Model
         });
     }
 }
+```
 
 You should also be able to map them to event classes
 
