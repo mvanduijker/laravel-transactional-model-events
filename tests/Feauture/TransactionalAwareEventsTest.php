@@ -4,8 +4,10 @@ namespace MVanDuijker\TransactionalModelEvents\Tests\Feauture;
 
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Event;
+use MVanDuijker\TransactionalModelEvents\Tests\Support\TestEvent;
 use MVanDuijker\TransactionalModelEvents\Tests\Support\TestModel;
 use MVanDuijker\TransactionalModelEvents\Tests\TestCase;
+use MVanDuijker\TransactionalModelEvents\TransactionalModelEventsServiceProvider;
 
 class TransactionalAwareEventsTest extends TestCase
 {
@@ -15,6 +17,10 @@ class TransactionalAwareEventsTest extends TestCase
     {
         parent::setUp();
         $this->recordedEvents = [];
+
+        $app = app();
+        $provider = new TransactionalModelEventsServiceProvider($app);
+        $provider->boot();
     }
 
     /** @test */
@@ -135,6 +141,23 @@ class TransactionalAwareEventsTest extends TestCase
         DB::rollBack();
 
         $this->assertDispatchedTimes('eloquent.afterRollback.created: ' . TestModel::class, 2);
+    }
+
+    public function testWithModelDispatchesCustomEvents()
+    {
+        $this->recordEvents();
+
+        $model = TestModel::create(['name' => 'With custom event']);
+        $model->setDispatchesEvents([
+            'afterRollback.updated' => TestEvent::class,
+        ]);
+
+        DB::beginTransaction();
+        $model->update(['name' => 'update!!']);
+        DB::rollback();
+
+        dd($this->recordedEvents);
+//        $this->assertDispatched('eloquent.afterRollback.updated: ' . TestModel::class);
     }
 
     private function recordEvents()

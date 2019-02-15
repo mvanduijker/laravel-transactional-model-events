@@ -24,16 +24,7 @@ composer require mvanduijker/laravel-transactional-model-events
 
 ## Usage
 
-Just add the trait TransactionalAwareEvents to your model or base model.
-
-```php
-class MyModel extends Model
-{
-    use TransactionalAwareEvents;
-}
-```
-
-The following events will become available:
+Just load the service provider (automatic since laravel 5.6) and following events will become available:
 
 * `afterCommit.created`
 * `afterCommit.saved`
@@ -84,19 +75,7 @@ class PictureFile extends Model
 }
 ```
 
-You should also be able to map them to event classes
-
-```php
-class PictureFile extends Model
-{
-    use TransactionalAwareEvents;
-    
-    protected $dispatchesEvents = [
-        'afterCommit.created' => PictureFileCreated::class,
-        'afterCommit.deleted' => PictureFileDeleted::class,
-    ];
-}
-```
+You **can not** map the events with $dispatchesEvents in your model.
 
 ### Testing
 
