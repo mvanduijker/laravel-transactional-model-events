@@ -22,6 +22,9 @@ trait TransactionalAwareEvents
             static::registerModelEvent($event, function (Model $model) use ($event) {
                 if (DB::transactionLevel()) {
                     self::$queuedTransactionalEvents[$event][] = $model;
+                } else {
+                    // auto fire the afterCommit callback when we are not in a transaction
+                    $model->fireModelEvent('afterCommit.' . $event);
                 }
             });
         }
