@@ -9,6 +9,9 @@ use Illuminate\Support\Facades\DB;
 
 trait TransactionalAwareEvents
 {
+    /**
+     * @var Model[]
+     */
     protected static $queuedTransactionalEvents = [];
 
     public static function bootTransactionalAwareEvents()
@@ -17,6 +20,8 @@ trait TransactionalAwareEvents
             'created', 'updated', 'saved', 'restored',
             'deleted', 'forceDeleted',
         ];
+
+        $dispatcher = static::getEventDispatcher();
 
         foreach ($eloquentEvents as $event) {
             static::registerModelEvent($event, function (Model $model) use ($event) {
@@ -29,7 +34,12 @@ trait TransactionalAwareEvents
             });
         }
 
-        static::getEventDispatcher()->listen(TransactionCommitted::class, function () {
+        if (!$dispatcher) {
+            // dispatcher probably unset in tests, we can safely bail out
+            return;
+        }
+
+        $dispatcher->listen(TransactionCommitted::class, function () {
             foreach (self::$queuedTransactionalEvents as $eventName => $models) {
                 foreach ($models as $model) {
                     $model->fireModelEvent('afterCommit.' . $eventName);
@@ -38,7 +48,7 @@ trait TransactionalAwareEvents
             self::$queuedTransactionalEvents = [];
         });
 
-        static::getEventDispatcher()->listen(TransactionRolledBack::class, function () {
+        $dispatcher->listen(TransactionRolledBack::class, function () {
             foreach (self::$queuedTransactionalEvents as $eventName => $models) {
                 foreach ($models as $model) {
                     $model->fireModelEvent('afterRollback.' . $eventName);
