@@ -2,7 +2,6 @@
 
 [![Latest Version on Packagist](https://img.shields.io/packagist/v/mvanduijker/laravel-transactional-model-events.svg?style=flat-square)](https://packagist.org/packages/mvanduijker/laravel-transactional-model-events)
 [![Build Status](https://img.shields.io/travis/mvanduijker/laravel-transactional-model-events/master.svg?style=flat-square)](https://travis-ci.org/mvanduijker/laravel-transactional-model-events)
-[![Quality Score](https://img.shields.io/scrutinizer/g/mvanduijker/laravel-transactional-model-events.svg?style=flat-square)](https://scrutinizer-ci.com/g/mvanduijker/laravel-transactional-model-events)
 [![Total Downloads](https://img.shields.io/packagist/dt/mvanduijker/laravel-transactional-model-events.svg?style=flat-square)](https://packagist.org/packages/mvanduijker/laravel-transactional-model-events)
 
 
