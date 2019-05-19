@@ -7,7 +7,7 @@
 
 Add transactional events to your eloquent models. Will automatically detect changes in your models within a transaction 
 and will fire events on commit or rollback. Should mimic the same functionality as 
-[transactional callbacks](https://guides.rubyonrails.org/active_record_callbacks.html#transaction-callbacks) of Ruby on 
+[transactional callbacks](https://guides.rubyonrails.org/active_record_callbacks.html#transaction-callbacks) in Ruby on 
 Rails.
 
 You want to use this if you want to listen on events fired by models within a transaction and you want to be sure the transaction has completed successfully (or is rolled back).
