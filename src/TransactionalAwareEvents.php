@@ -16,12 +16,17 @@ trait TransactionalAwareEvents
 
     public static function bootTransactionalAwareEvents()
     {
+        $dispatcher = static::getEventDispatcher();
+
+        if (!$dispatcher) {
+            // dispatcher probably unset in tests, we can safely bail out
+            return;
+        }
+
         $eloquentEvents = [
             'created', 'updated', 'saved', 'restored',
             'deleted', 'forceDeleted',
         ];
-
-        $dispatcher = static::getEventDispatcher();
 
         foreach ($eloquentEvents as $event) {
             static::registerModelEvent($event, function (Model $model) use ($event) {
@@ -32,11 +37,6 @@ trait TransactionalAwareEvents
                     $model->fireModelEvent('afterCommit.' . $event);
                 }
             });
-        }
-
-        if (!$dispatcher) {
-            // dispatcher probably unset in tests, we can safely bail out
-            return;
         }
 
         $dispatcher->listen(TransactionCommitted::class, function () {
