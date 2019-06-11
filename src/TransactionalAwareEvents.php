@@ -40,6 +40,10 @@ trait TransactionalAwareEvents
         }
 
         $dispatcher->listen(TransactionCommitted::class, function () {
+            if (DB::transactionLevel() > 0) {
+                return;
+            }
+
             foreach (self::$queuedTransactionalEvents as $eventName => $models) {
                 foreach ($models as $model) {
                     $model->fireModelEvent('afterCommit.' . $eventName);
@@ -49,6 +53,10 @@ trait TransactionalAwareEvents
         });
 
         $dispatcher->listen(TransactionRolledBack::class, function () {
+            if (DB::transactionLevel() > 0) {
+                return;
+            }
+
             foreach (self::$queuedTransactionalEvents as $eventName => $models) {
                 foreach ($models as $model) {
                     $model->fireModelEvent('afterRollback.' . $eventName);
