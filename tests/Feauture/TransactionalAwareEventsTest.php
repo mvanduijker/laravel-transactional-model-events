@@ -125,7 +125,8 @@ class TransactionalAwareEventsTest extends TestCase
         $this->assertDispatched('eloquent.afterRollback.deleted: ' . TestModel::class);
     }
 
-    public function test_it_fires_with_multiple_models()
+    /** @test */
+    public function it_fires_with_multiple_models()
     {
         $this->recordEvents();
 
