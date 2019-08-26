@@ -35,6 +35,7 @@ trait TransactionalAwareEvents
                 } else {
                     // auto fire the afterCommit callback when we are not in a transaction
                     $model->fireModelEvent('afterCommit.' . $event);
+                    $model->fireModelEvent('afterCommit' . ucfirst($event));
                 }
             });
         }
