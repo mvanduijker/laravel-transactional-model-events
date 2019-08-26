@@ -5,6 +5,7 @@ namespace MVanDuijker\TransactionalModelEvents\Tests\Feauture;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Event;
 use MVanDuijker\TransactionalModelEvents\Tests\Support\TestModel;
+use MVanDuijker\TransactionalModelEvents\Tests\Support\TestObserver;
 use MVanDuijker\TransactionalModelEvents\Tests\TestCase;
 
 class TransactionalAwareEventsTest extends TestCase
@@ -136,6 +137,32 @@ class TransactionalAwareEventsTest extends TestCase
         DB::rollBack();
 
         $this->assertDispatchedTimes('eloquent.afterRollback.created: ' . TestModel::class, 2);
+    }
+
+    /** @test */
+    public function it_can_observe_events_on_commit()
+    {
+        TestModel::observe(TestObserver::class);
+
+        DB::beginTransaction();
+        $model = TestModel::create(['name' => 'test create first']);
+        $this->assertEmpty($model->observer_call);
+        DB::commit();
+
+        $this->assertTrue($model->observer_call);
+    }
+
+    /** @test */
+    public function it_can_observe_events_on_rollback()
+    {
+        TestModel::observe(TestObserver::class);
+
+        DB::beginTransaction();
+        $model = TestModel::create(['name' => 'test create first']);
+        $this->assertEmpty($model->observer_call);
+        DB::rollback();
+
+        $this->assertTrue($model->observer_call);
     }
 
     private function recordEvents()

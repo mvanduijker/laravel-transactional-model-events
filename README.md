@@ -97,6 +97,70 @@ class PictureFile extends Model
 }
 ```
 
+And as icing on the cake, you can observe them with the following methods:
+
+* `afterCommitCreated`
+* `afterCommitSaved`
+* `afterCommitUpdated`
+* `afterCommitDeleted`
+* `afterCommitRestored`
+* `afterCommitForceDeleted`
+* `afterRollbackCreated`
+* `afterRollbackSaved`
+* `afterRollbackUpdated`
+* `afterRollbackDeleted`
+* `afterRollbackRestored`
+* `afterRollbackForceDeleted` 
+
+For example:
+
+```php
+<?php
+
+class PictureFileObserver
+{
+    public function afterCommitDeleted(PictureFile $model)
+    {
+        if (Storage::exists($model->file)) {
+            Storage::delete($model->file);            
+        }
+    }
+}
+```
+
+And register the observer in you ServiceProvider:
+
+```php
+<?php
+
+namespace App\Providers;
+
+use Illuminate\Support\ServiceProvider;
+
+class AppServiceProvider extends ServiceProvider
+{
+    /**
+     * Register any application services.
+     *
+     * @return void
+     */
+    public function register()
+    {
+        //
+    }
+
+    /**
+     * Bootstrap any application services.
+     *
+     * @return void
+     */
+    public function boot()
+    {
+        PictureFile::observe(PictureFileObserver::class);
+    }
+}
+```
+
 ### Testing
 
 ```bash

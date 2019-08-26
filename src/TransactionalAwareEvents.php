@@ -9,6 +9,11 @@ use Illuminate\Support\Facades\DB;
 
 trait TransactionalAwareEvents
 {
+    protected static $transactionalEloquentEvents = [
+        'created', 'updated', 'saved', 'restored',
+        'deleted', 'forceDeleted',
+    ];
+
     /**
      * @var Model[]
      */
@@ -23,12 +28,7 @@ trait TransactionalAwareEvents
             return;
         }
 
-        $eloquentEvents = [
-            'created', 'updated', 'saved', 'restored',
-            'deleted', 'forceDeleted',
-        ];
-
-        foreach ($eloquentEvents as $event) {
+        foreach (self::$transactionalEloquentEvents as $event) {
             static::registerModelEvent($event, function (Model $model) use ($event) {
                 if (DB::transactionLevel()) {
                     self::$queuedTransactionalEvents[$event][] = $model;
@@ -39,7 +39,7 @@ trait TransactionalAwareEvents
             });
         }
 
-        $dispatcher->listen(TransactionCommitted::class, function () {
+        $dispatcher->listen(TransactionCommitted::class, function () use ($dispatcher) {
             if (DB::transactionLevel() > 0) {
                 return;
             }
@@ -47,6 +47,7 @@ trait TransactionalAwareEvents
             foreach (self::$queuedTransactionalEvents as $eventName => $models) {
                 foreach ($models as $model) {
                     $model->fireModelEvent('afterCommit.' . $eventName);
+                    $model->fireModelEvent('afterCommit' . ucfirst($eventName));
                 }
             }
             self::$queuedTransactionalEvents = [];
@@ -60,9 +61,18 @@ trait TransactionalAwareEvents
             foreach (self::$queuedTransactionalEvents as $eventName => $models) {
                 foreach ($models as $model) {
                     $model->fireModelEvent('afterRollback.' . $eventName);
+                    $model->fireModelEvent('afterRollback' . ucfirst($eventName));
                 }
             }
             self::$queuedTransactionalEvents = [];
         });
+    }
+
+    public function initializeTransactionalAwareEvents()
+    {
+        foreach (self::$transactionalEloquentEvents as $eloquentEvent) {
+            $this->addObservableEvents('afterCommit' . ucfirst($eloquentEvent));
+            $this->addObservableEvents('afterRollback' . ucfirst($eloquentEvent));
+        }
     }
 }
