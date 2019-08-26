@@ -23,11 +23,6 @@ class TestCase extends \Orchestra\Testbench\TestCase
         });
     }
 
-    protected function createTestModel($name): TestModel
-    {
-        return TestModel::create(['name' => $name]);
-    }
-
     protected function transactionalEvents()
     {
         return [
