@@ -26,6 +26,8 @@ composer require mvanduijker/laravel-transactional-model-events
 Just add the trait TransactionalAwareEvents to your model or base model.
 
 ```php
+<?php
+
 class MyModel extends Model
 {
     use TransactionalAwareEvents;
@@ -50,6 +52,8 @@ The following events will become available:
 You can add listeners in you EventServiceProvider the same way as normal events
 
 ```php
+<?php
+
 /**
  * The event listener mappings for the application.
  *
@@ -66,6 +70,8 @@ protected $listen = [
 Or you can put them in your model boot method:
 
 ```php
+<?php
+
 class PictureFile extends Model
 {
     use TransactionalAwareEvents;
@@ -86,6 +92,8 @@ class PictureFile extends Model
 You should also be able to map them to event classes
 
 ```php
+<?php
+
 class PictureFile extends Model
 {
     use TransactionalAwareEvents;
