@@ -40,7 +40,7 @@ trait TransactionalAwareEvents
             });
         }
 
-        $dispatcher->listen(TransactionCommitted::class, function () use ($dispatcher) {
+        $dispatcher->listen(TransactionCommitted::class, function () {
             if (DB::transactionLevel() > 0) {
                 return;
             }
