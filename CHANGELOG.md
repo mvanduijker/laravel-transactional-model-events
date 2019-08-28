@@ -2,7 +2,7 @@
 
 All notable changes to `laravel-transactional-model-events` will be documented in this file
 
-## master
+## 2.0.0 - 2019-08-28
 
 - Add support for observers
 - removed support for laravel 5.5 and 5.6
