@@ -21,7 +21,7 @@
     ],
     "require": {
         "php": "^7.2",
-        "illuminate/database": "~5.7.0|~5.8.0|~6.0"
+        "illuminate/database": "~5.7.0|~5.8.0|~6.0,!=6.9.0"
     },
     "require-dev": {
         "larapack/dd": "^1.0",
