@@ -3,7 +3,6 @@
 namespace MVanDuijker\TransactionalModelEvents\Tests;
 
 use Illuminate\Database\Schema\Blueprint;
-use MVanDuijker\TransactionalModelEvents\Tests\Support\TestModel;
 
 class TestCase extends \Orchestra\Testbench\TestCase
 {
@@ -17,6 +16,19 @@ class TestCase extends \Orchestra\Testbench\TestCase
         ]);
 
         $app['db']->connection()->getSchemaBuilder()->create('test_models', function (Blueprint $table) {
+            $table->increments('id');
+            $table->string('name');
+            $table->softDeletes();
+        });
+
+        /** Second database connection */
+        $app['config']->set('database.connections.other', [
+            'driver' => 'sqlite',
+            'database' => ':memory:',
+            'prefix' => 'second',
+        ]);
+
+        $app['db']->connection('other')->getSchemaBuilder()->create('test_models', function (Blueprint $table) {
             $table->increments('id');
             $table->string('name');
             $table->softDeletes();

@@ -5,7 +5,6 @@ namespace MVanDuijker\TransactionalModelEvents;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Events\TransactionCommitted;
 use Illuminate\Database\Events\TransactionRolledBack;
-use Illuminate\Support\Facades\DB;
 
 trait TransactionalAwareEvents
 {
@@ -30,8 +29,8 @@ trait TransactionalAwareEvents
 
         foreach (self::$transactionalEloquentEvents as $event) {
             static::registerModelEvent($event, function (Model $model) use ($event) {
-                if (DB::transactionLevel()) {
-                    self::$queuedTransactionalEvents[$event][] = $model;
+                if ($model->getConnection()->transactionLevel()) {
+                    self::$queuedTransactionalEvents[$model->getConnectionName()][$event][] = $model;
                 } else {
                     // auto fire the afterCommit callback when we are not in a transaction
                     $model->fireModelEvent('afterCommit.' . $event);
@@ -40,32 +39,34 @@ trait TransactionalAwareEvents
             });
         }
 
-        $dispatcher->listen(TransactionCommitted::class, function () {
-            if (DB::transactionLevel() > 0) {
+        $dispatcher->listen(TransactionCommitted::class, function (TransactionCommitted $event) {
+            if ($event->connection->transactionLevel() > 0) {
                 return;
             }
 
-            foreach (self::$queuedTransactionalEvents as $eventName => $models) {
+            foreach ((self::$queuedTransactionalEvents[$event->connectionName] ?? []) as $eventName => $models) {
+                /** @var Model $model */
                 foreach ($models as $model) {
                     $model->fireModelEvent('afterCommit.' . $eventName);
                     $model->fireModelEvent('afterCommit' . ucfirst($eventName));
                 }
             }
-            self::$queuedTransactionalEvents = [];
+            self::$queuedTransactionalEvents[$event->connectionName] = [];
         });
 
-        $dispatcher->listen(TransactionRolledBack::class, function () {
-            if (DB::transactionLevel() > 0) {
+        $dispatcher->listen(TransactionRolledBack::class, function (TransactionRolledBack $event) {
+            if ($event->connection->transactionLevel() > 0) {
                 return;
             }
 
-            foreach (self::$queuedTransactionalEvents as $eventName => $models) {
+            foreach ((self::$queuedTransactionalEvents[$event->connectionName] ?? []) as $eventName => $models) {
+                /** @var Model $model */
                 foreach ($models as $model) {
                     $model->fireModelEvent('afterRollback.' . $eventName);
                     $model->fireModelEvent('afterRollback' . ucfirst($eventName));
                 }
             }
-            self::$queuedTransactionalEvents = [];
+            self::$queuedTransactionalEvents[$event->connectionName] = [];
         });
     }
 

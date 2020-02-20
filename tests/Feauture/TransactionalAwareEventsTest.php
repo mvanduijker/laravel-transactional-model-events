@@ -165,6 +165,27 @@ class TransactionalAwareEventsTest extends TestCase
         $this->assertTrue($model->observer_call);
     }
 
+    /** @test */
+    public function it_can_handle_multiple_connections()
+    {
+        $this->recordEvents();
+
+        DB::connection('other')->beginTransaction();
+
+        /** @var TestModel $testModel */
+        $testModel = TestModel::make(['name' => 'test create']);
+        $testModel->setConnection('other');
+        $testModel->save();
+
+        $this->assertNotDispatched('eloquent.afterCommit.created: ' . TestModel::class);
+
+        DB::commit();
+        $this->assertNotDispatched('eloquent.afterCommit.created: ' . TestModel::class);
+
+        DB::connection('other')->commit();
+        $this->assertDispatched('eloquent.afterCommit.created: ' . TestModel::class);
+    }
+
     private function recordEvents()
     {
         Event::listen('eloquent.*', function ($eventName, $_) {
