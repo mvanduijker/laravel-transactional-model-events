@@ -169,6 +169,9 @@ class AppServiceProvider extends ServiceProvider
 }
 ```
 
+Multiple database connections are supported, events are triggered when the transaction is committed on the configured
+connection of the model. 
+
 ### Testing
 
 ```bash
