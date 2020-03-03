@@ -2,6 +2,10 @@
 
 All notable changes to `laravel-transactional-model-events` will be documented in this file
 
+## 2.3.0 - 2020-03-03
+
+- support for laravel 7.0
+
 ## 2.2.0 - 2020-02-21
 
 - Added support for multiple database connections
