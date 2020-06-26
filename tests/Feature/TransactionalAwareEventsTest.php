@@ -1,6 +1,6 @@
 <?php
 
-namespace MVanDuijker\TransactionalModelEvents\Tests\Feauture;
+namespace MVanDuijker\TransactionalModelEvents\Tests\Feature;
 
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Event;
@@ -140,29 +140,42 @@ class TransactionalAwareEventsTest extends TestCase
     }
 
     /** @test */
-    public function it_can_observe_events_on_commit()
+    public function it_can_observe_created_event_on_commit()
     {
         TestModel::observe(TestObserver::class);
 
         DB::beginTransaction();
-        $model = TestModel::create(['name' => 'test create first']);
-        $this->assertEmpty($model->observer_call);
+        $model = TestModel::create(['name' => 'test create']);
+        $this->assertEmpty($model->observer_call_created);
         DB::commit();
 
-        $this->assertTrue($model->observer_call);
+        $this->assertTrue($model->observer_call_created);
     }
 
     /** @test */
-    public function it_can_observe_events_on_rollback()
+    public function it_can_observe_saved_event_on_commit()
     {
         TestModel::observe(TestObserver::class);
 
         DB::beginTransaction();
-        $model = TestModel::create(['name' => 'test create first']);
-        $this->assertEmpty($model->observer_call);
+        $model = TestModel::create(['name' => 'test saved']);
+        $this->assertEmpty($model->observer_call_saved);
+        DB::commit();
+
+        $this->assertTrue($model->observer_call_saved);
+    }
+
+    /** @test */
+    public function it_can_observe_saved_event_on_rollback()
+    {
+        TestModel::observe(TestObserver::class);
+
+        DB::beginTransaction();
+        $model = TestModel::create(['name' => 'test saved rollback']);
+        $this->assertEmpty($model->observer_call_rollback_saved);
         DB::rollback();
 
-        $this->assertTrue($model->observer_call);
+        $this->assertTrue($model->observer_call_rollback_saved);
     }
 
     /** @test */
