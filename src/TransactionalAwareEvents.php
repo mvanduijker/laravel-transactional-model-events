@@ -30,7 +30,10 @@ trait TransactionalAwareEvents
         foreach (self::$transactionalEloquentEvents as $event) {
             static::registerModelEvent($event, function (Model $model) use ($event) {
                 if ($model->getConnection()->transactionLevel()) {
-                    self::$queuedTransactionalEvents[$model->getConnectionName()][$event][] = $model;
+                    // In some rare cases the connection name on the model can be null,
+                    // fallback on the connection name from the connection
+                    $connectionName = $model->getConnectionName() ?? $model->getConnection()->getName();
+                    self::$queuedTransactionalEvents[$connectionName][$event][] = $model;
                 } else {
                     // auto fire the afterCommit callback when we are not in a transaction
                     $model->fireModelEvent('afterCommit.' . $event);

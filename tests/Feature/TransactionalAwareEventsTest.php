@@ -206,6 +206,22 @@ class TransactionalAwareEventsTest extends TestCase
         });
     }
 
+    /** @test */
+    public function it_can_observe_created_event_on_commit_when_null_connection_name_on_model()
+    {
+        TestModel::observe(TestObserver::class);
+
+        DB::beginTransaction();
+        /** @var TestModel $model */
+        $model = TestModel::make(['name' => 'test create']);
+        $model->setConnection(null);
+        $model->save();
+        $this->assertEmpty($model->observer_call_created);
+        DB::commit();
+
+        $this->assertTrue($model->observer_call_created);
+    }
+
     private function assertDispatched($event)
     {
         $this->assertTrue(in_array($event, $this->recordedEvents), "$event not dispatched");
