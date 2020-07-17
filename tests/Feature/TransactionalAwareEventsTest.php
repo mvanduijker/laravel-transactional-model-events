@@ -199,13 +199,6 @@ class TransactionalAwareEventsTest extends TestCase
         $this->assertDispatched('eloquent.afterCommit.created: ' . TestModel::class);
     }
 
-    private function recordEvents()
-    {
-        Event::listen('eloquent.*', function ($eventName, $_) {
-            $this->recordedEvents[] = $eventName;
-        });
-    }
-
     /** @test */
     public function it_can_observe_created_event_on_commit_when_null_connection_name_on_model()
     {
@@ -220,6 +213,13 @@ class TransactionalAwareEventsTest extends TestCase
         DB::commit();
 
         $this->assertTrue($model->observer_call_created);
+    }
+
+    private function recordEvents()
+    {
+        Event::listen('eloquent.*', function ($eventName, $_) {
+            $this->recordedEvents[] = $eventName;
+        });
     }
 
     private function assertDispatched($event)
