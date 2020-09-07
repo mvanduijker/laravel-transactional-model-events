@@ -146,10 +146,10 @@ class TransactionalAwareEventsTest extends TestCase
 
         DB::beginTransaction();
         $model = TestModel::create(['name' => 'test create']);
-        $this->assertEmpty($model->observer_call_created);
+        self::assertEmpty($model->observer_call_created);
         DB::commit();
 
-        $this->assertTrue($model->observer_call_created);
+        self::assertTrue($model->observer_call_created);
     }
 
     /** @test */
@@ -159,10 +159,10 @@ class TransactionalAwareEventsTest extends TestCase
 
         DB::beginTransaction();
         $model = TestModel::create(['name' => 'test saved']);
-        $this->assertEmpty($model->observer_call_saved);
+        self::assertEmpty($model->observer_call_saved);
         DB::commit();
 
-        $this->assertTrue($model->observer_call_saved);
+        self::assertTrue($model->observer_call_saved);
     }
 
     /** @test */
@@ -172,10 +172,10 @@ class TransactionalAwareEventsTest extends TestCase
 
         DB::beginTransaction();
         $model = TestModel::create(['name' => 'test saved rollback']);
-        $this->assertEmpty($model->observer_call_rollback_saved);
+        self::assertEmpty($model->observer_call_rollback_saved);
         DB::rollback();
 
-        $this->assertTrue($model->observer_call_rollback_saved);
+        self::assertTrue($model->observer_call_rollback_saved);
     }
 
     /** @test */
@@ -209,10 +209,10 @@ class TransactionalAwareEventsTest extends TestCase
         $model = TestModel::make(['name' => 'test create']);
         $model->setConnection(null);
         $model->save();
-        $this->assertEmpty($model->observer_call_created);
+        self::assertEmpty($model->observer_call_created);
         DB::commit();
 
-        $this->assertTrue($model->observer_call_created);
+        self::assertTrue($model->observer_call_created);
     }
 
     private function recordEvents()
@@ -224,17 +224,17 @@ class TransactionalAwareEventsTest extends TestCase
 
     private function assertDispatched($event)
     {
-        $this->assertTrue(in_array($event, $this->recordedEvents), "$event not dispatched");
+        self::assertTrue(in_array($event, $this->recordedEvents), "$event dispatched");
     }
 
     private function assertNotDispatched($event)
     {
-        $this->assertFalse(in_array($event, $this->recordedEvents), "$event dispatched");
+        self::assertFalse(in_array($event, $this->recordedEvents), "$event not dispatched");
     }
 
     private function assertDispatchedTimes($event, $times = 1)
     {
-        $this->assertCount($times, array_filter($this->recordedEvents, function ($recordedEvent) use ($event) {
+        self::assertCount($times, array_filter($this->recordedEvents, function ($recordedEvent) use ($event) {
             return $recordedEvent === $event;
         }));
     }
