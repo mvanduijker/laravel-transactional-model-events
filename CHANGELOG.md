@@ -2,6 +2,12 @@
 
 All notable changes to `laravel-transactional-model-events` will be documented in this file
 
+## 2.4.0 - 2020-09-08
+
+- support for Laravel 8
+- dropped support for php 7.2
+- dropped support for Laravel 5.x
+
 ## 2.3.1 - 2020-08-27
 
 - fix possible issue with Laravel Nova
