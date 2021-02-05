@@ -2,6 +2,10 @@
 
 All notable changes to `laravel-transactional-model-events` will be documented in this file
 
+## 2.5.0 - 2021-02-05
+
+- support for php 8
+
 ## 2.4.0 - 2020-09-08
 
 - support for Laravel 8
