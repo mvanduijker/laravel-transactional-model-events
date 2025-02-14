@@ -4,6 +4,7 @@ namespace MVanDuijker\TransactionalModelEvents\Tests\Feature;
 
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Event;
+use MVanDuijker\TransactionalModelEvents\Tests\Support\TestAttributeModel;
 use MVanDuijker\TransactionalModelEvents\Tests\Support\TestModel;
 use MVanDuijker\TransactionalModelEvents\Tests\Support\TestObserver;
 use MVanDuijker\TransactionalModelEvents\Tests\TestCase;
@@ -209,6 +210,19 @@ class TransactionalAwareEventsTest extends TestCase
         $model = TestModel::make(['name' => 'test create']);
         $model->setConnection(null);
         $model->save();
+        self::assertEmpty($model->observer_call_created);
+        DB::commit();
+
+        self::assertTrue($model->observer_call_created);
+    }
+
+    /** @test */
+    public function it_can_observed_created_event_on_commit_attribute_observer()
+    {
+        $this->markTestSkippedWhen(version_compare(app()->version(), '10.44.0', '<'), 'This Laravel version does not support making observers with attributes');
+
+        DB::beginTransaction();
+        $model = TestAttributeModel::create(['name' => 'test create']);
         self::assertEmpty($model->observer_call_created);
         DB::commit();
 
