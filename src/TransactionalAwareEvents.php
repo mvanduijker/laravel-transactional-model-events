@@ -73,11 +73,16 @@ trait TransactionalAwareEvents
         });
     }
 
-    public function initializeTransactionalAwareEvents()
+    public function getObservableEvents()
     {
+        $observableEvents = parent::getObservableEvents();
+
         foreach (self::$transactionalEloquentEvents as $eloquentEvent) {
-            $this->addObservableEvents('afterCommit' . ucfirst($eloquentEvent));
-            $this->addObservableEvents('afterRollback' . ucfirst($eloquentEvent));
+            $observableEvents[] = 'afterCommit' . ucfirst($eloquentEvent);
+            $observableEvents[] = 'afterRollback' . ucfirst($eloquentEvent);
+
         }
+
+        return $observableEvents;
     }
 }
