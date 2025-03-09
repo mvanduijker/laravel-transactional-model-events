@@ -3,10 +3,11 @@
 namespace MVanDuijker\TransactionalModelEvents\Tests\Support;
 
 use Illuminate\Database\Eloquent\Attributes\ObservedBy;
+use Illuminate\Database\Eloquent\Model;
 use MVanDuijker\TransactionalModelEvents\TransactionalAwareEvents;
 
 #[ObservedBy(TestObserver::class)]
-class TestAttributeModel extends TestModel
+class TestAttributeModel extends Model
 {
     use TransactionalAwareEvents;
 
