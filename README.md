@@ -169,6 +169,21 @@ class AppServiceProvider extends ServiceProvider
 }
 ```
 
+Since Laravel [version 10.44](https://laravel-news.com/laravel-10-44-0#content-new-observedby-attribute-for-models)
+it's also possible to register the observer with the`ObservedBy` attribute.
+
+```php
+<?php
+
+use Illuminate\Database\Eloquent\Attributes\ObservedBy; 
+
+#[ObservedBy(PictureFileObserver::class)]
+class PictureFileObserver
+{
+...
+}
+```
+
 Multiple database connections are supported, events are triggered when the transaction is committed on the configured
 connection of the model. 
 
