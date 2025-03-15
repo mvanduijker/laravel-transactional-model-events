@@ -2,6 +2,11 @@
 
 All notable changes to `laravel-transactional-model-events` will be documented in this file
 
+## 3.0.0 - 2025-03-15
+
+- Add support for observing through annotations
+- possible BC issue if you have overridden Model::getObservableEvents
+
 ## 2.9.0 - 2025-02-26
 
 - Add support for Laravel 12
