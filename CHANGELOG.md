@@ -2,6 +2,10 @@
 
 All notable changes to `laravel-transactional-model-events` will be documented in this file
 
+## 3.0.0 - 2025-11-08
+
+- Support php 8.5
+
 ## 3.0.0 - 2025-03-15
 
 - Add support for observing through annotations
@@ -14,7 +18,7 @@ All notable changes to `laravel-transactional-model-events` will be documented i
 ## 2.8.0 - 2024-03-13
 
 - Add support for Laravel 11
-- Added PHP 8.3 in the pipeline 
+- Added PHP 8.3 in the pipeline
 
 ## 2.7.0 - 2023-02-14
 
