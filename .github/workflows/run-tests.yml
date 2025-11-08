@@ -1,63 +1,63 @@
 name: Run tests
 
 on:
-  - push
+    - push
 
 jobs:
-  test:
-    runs-on: ${{ matrix.os }}
+    test:
+        runs-on: ${{ matrix.os }}
 
-    strategy:
-      fail-fast: false
-      matrix:
-        os: [ubuntu-latest]
-        php: [8.0, 8.1, 8.2, 8.3, 8.4]
-        laravel: ['9.*', '10.*', '11.*', '12.*']
-        dependency-version: [prefer-stable]
-        include:
-          -   testbench: 7.*
-              laravel: 9.*
-          - testbench: 8.*
-            laravel: 10.*
-          -   testbench: 9.*
-              laravel: 11.*
-          - testbench: 10.*
-            laravel: 12.*
-        exclude:
-          - php: 8.0
-            laravel: 10.*
-          - php: 8.0
-            laravel: 11.*
-          -   php: 8.0
-              laravel: 12.*
-          - php: 8.1
-            laravel: 11.*
-          -   php: 8.1
-              laravel: 12.*
+        strategy:
+            fail-fast: false
+            matrix:
+                os: [ubuntu-latest]
+                php: [8.0, 8.1, 8.2, 8.3, 8.4, 8.5]
+                laravel: ["9.*", "10.*", "11.*", "12.*"]
+                dependency-version: [prefer-stable]
+                include:
+                    - testbench: 7.*
+                      laravel: 9.*
+                    - testbench: 8.*
+                      laravel: 10.*
+                    - testbench: 9.*
+                      laravel: 11.*
+                    - testbench: 10.*
+                      laravel: 12.*
+                exclude:
+                    - php: 8.0
+                      laravel: 10.*
+                    - php: 8.0
+                      laravel: 11.*
+                    - php: 8.0
+                      laravel: 12.*
+                    - php: 8.1
+                      laravel: 11.*
+                    - php: 8.1
+                      laravel: 12.*
 
-    name: P${{ matrix.php }} - L${{ matrix.laravel }} - ${{ matrix.dependency-version }} - ${{ matrix.os }}
+        name: P${{ matrix.php }} - L${{ matrix.laravel }} - ${{ matrix.dependency-version }} - ${{ matrix.os }}
 
-    steps:
-      - name: Checkout code
-        uses: actions/checkout@v4
+        steps:
+            - name: Checkout code
+              uses: actions/checkout@v4
 
-      - name: Cache dependencies
-        uses: actions/cache@v4
-        with:
-          path: ~/.composer/cache/files
-          key: dependencies-laravel-${{ matrix.laravel }}-php-${{ matrix.php }}-composer-${{ hashFiles('composer.json') }}
+            - name: Cache dependencies
+              uses: actions/cache@v4
+              with:
+                  path: ~/.composer/cache/files
+                  key: dependencies-laravel-${{ matrix.laravel }}-php-${{ matrix.php }}-composer-${{ hashFiles('composer.json') }}
 
-      - name: Setup PHP
-        uses: shivammathur/setup-php@v2
-        with:
-          php-version: ${{ matrix.php }}
-          extensions: pdo, sqlite, pdo_sqlite
-          coverage: pcov
+            - name: Setup PHP
+              uses: shivammathur/setup-php@v2
+              with:
+                  php-version: ${{ matrix.php }}
+                  extensions: pdo, sqlite, pdo_sqlite
+                  coverage: pcov
 
-      - name: Install dependencies
-        run: |
-          composer require "illuminate/database:${{ matrix.laravel }}" "orchestra/testbench:${{ matrix.testbench }}" --no-interaction --no-update
-          composer update --${{ matrix.dependency-version }} --prefer-dist --no-interaction
+            - name: Install dependencies
+              run: |
+                  composer require "illuminate/database:${{ matrix.laravel }}" "orchestra/testbench:${{ matrix.testbench }}" --no-interaction --no-update
+                  composer update --${{ matrix.dependency-version }} --prefer-dist --no-interaction
 
-      - name: Execute tests
-        run: vendor/bin/phpunit --coverage-text --coverage-clover=coverage.clover
+            - name: Execute tests
+              run: vendor/bin/phpunit --coverage-text --coverage-clover=coverage.clover
