@@ -19,8 +19,7 @@ class TransactionalAwareEventsTest extends TestCase
         $this->recordedEvents = [];
     }
 
-    /** @test */
-    public function it_fires_commit_created()
+    public function test_it_fires_commit_created()
     {
         $this->recordEvents();
 
@@ -32,8 +31,7 @@ class TransactionalAwareEventsTest extends TestCase
         $this->assertDispatched('eloquent.afterCommit.created: ' . TestModel::class);
     }
 
-    /** @test */
-    public function it_fires_commit_saved()
+    public function test_it_fires_commit_saved()
     {
         $this->recordEvents();
 
@@ -45,8 +43,7 @@ class TransactionalAwareEventsTest extends TestCase
         $this->assertDispatched('eloquent.afterCommit.saved: ' . TestModel::class);
     }
 
-    /** @test */
-    public function it_fires_commit_updated()
+    public function test_it_fires_commit_updated()
     {
         $this->recordEvents();
         $model = TestModel::create(['name' => 'test saved']);
@@ -59,8 +56,7 @@ class TransactionalAwareEventsTest extends TestCase
         $this->assertDispatched('eloquent.afterCommit.updated: ' . TestModel::class);
     }
 
-    /** @test */
-    public function it_fires_commit_deleted()
+    public function test_it_fires_commit_deleted()
     {
         $this->recordEvents();
         $model = TestModel::create(['name' => 'test delete']);
@@ -73,8 +69,7 @@ class TransactionalAwareEventsTest extends TestCase
         $this->assertDispatched('eloquent.afterCommit.deleted: ' . TestModel::class);
     }
 
-    /** @test */
-    public function it_fires_rollback_created()
+    public function test_it_fires_rollback_created()
     {
         $this->recordEvents();
 
@@ -86,8 +81,7 @@ class TransactionalAwareEventsTest extends TestCase
         $this->assertDispatched('eloquent.afterRollback.created: ' . TestModel::class);
     }
 
-    /** @test */
-    public function it_fires_rollback_saved()
+    public function test_it_fires_rollback_saved()
     {
         $this->recordEvents();
 
@@ -99,8 +93,7 @@ class TransactionalAwareEventsTest extends TestCase
         $this->assertDispatched('eloquent.afterRollback.saved: ' . TestModel::class);
     }
 
-    /** @test */
-    public function it_fires_rollback_updated()
+    public function test_it_fires_rollback_updated()
     {
         $this->recordEvents();
         $model = TestModel::create(['name' => 'test saved']);
@@ -113,8 +106,7 @@ class TransactionalAwareEventsTest extends TestCase
         $this->assertDispatched('eloquent.afterRollback.updated: ' . TestModel::class);
     }
 
-    /** @test */
-    public function it_fires_rollback_deleted()
+    public function test_it_fires_rollback_deleted()
     {
         $this->recordEvents();
         $model = TestModel::create(['name' => 'test delete']);
@@ -127,8 +119,7 @@ class TransactionalAwareEventsTest extends TestCase
         $this->assertDispatched('eloquent.afterRollback.deleted: ' . TestModel::class);
     }
 
-    /** @test */
-    public function it_fires_with_multiple_models()
+    public function test_it_fires_with_multiple_models()
     {
         $this->recordEvents();
 
@@ -140,8 +131,7 @@ class TransactionalAwareEventsTest extends TestCase
         $this->assertDispatchedTimes('eloquent.afterRollback.created: ' . TestModel::class, 2);
     }
 
-    /** @test */
-    public function it_can_observe_created_event_on_commit()
+    public function test_it_can_observe_created_event_on_commit()
     {
         TestModel::observe(TestObserver::class);
 
@@ -153,8 +143,7 @@ class TransactionalAwareEventsTest extends TestCase
         self::assertTrue($model->observer_call_created);
     }
 
-    /** @test */
-    public function it_can_observe_saved_event_on_commit()
+    public function test_it_can_observe_saved_event_on_commit()
     {
         TestModel::observe(TestObserver::class);
 
@@ -166,8 +155,7 @@ class TransactionalAwareEventsTest extends TestCase
         self::assertTrue($model->observer_call_saved);
     }
 
-    /** @test */
-    public function it_can_observe_saved_event_on_rollback()
+    public function test_it_can_observe_saved_event_on_rollback()
     {
         TestModel::observe(TestObserver::class);
 
@@ -179,8 +167,7 @@ class TransactionalAwareEventsTest extends TestCase
         self::assertTrue($model->observer_call_rollback_saved);
     }
 
-    /** @test */
-    public function it_can_handle_multiple_connections()
+    public function test_it_can_handle_multiple_connections()
     {
         $this->recordEvents();
 
@@ -200,8 +187,7 @@ class TransactionalAwareEventsTest extends TestCase
         $this->assertDispatched('eloquent.afterCommit.created: ' . TestModel::class);
     }
 
-    /** @test */
-    public function it_can_observe_created_event_on_commit_when_null_connection_name_on_model()
+    public function test_it_can_observe_created_event_on_commit_when_null_connection_name_on_model()
     {
         TestModel::observe(TestObserver::class);
 
@@ -216,8 +202,7 @@ class TransactionalAwareEventsTest extends TestCase
         self::assertTrue($model->observer_call_created);
     }
 
-    /** @test */
-    public function it_can_observed_created_event_on_commit_attribute_observer()
+    public function test_it_can_observed_created_event_on_commit_attribute_observer()
     {
         $this->markTestSkippedWhen(version_compare(app()->version(), '10.44.0', '<'), 'This Laravel version does not support making observers with attributes');
 
